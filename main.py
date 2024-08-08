@@ -1,7 +1,7 @@
 import os
 from change import generate
 
-weather = ["suny", "night"]
+weather = ["sunny", "night"]
 image_dir = "leftImg8bit"
 
 for w in weather:
