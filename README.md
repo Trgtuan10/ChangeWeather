@@ -1,1 +1,5 @@
 # ChangeWeather
+
+```
+python main.py
+```
