@@ -11,8 +11,15 @@ from diffusers import (
     StableDiffusionControlNetPipeline,
     DPMSolverMultistepScheduler,
 )
-def generate(img_path, weather):
+def load_pipe():
     checkpoint = "lllyasviel/control_v11e_sd15_ip2p"
+    controlnet = ControlNetModel.from_pretrained(checkpoint, torch_dtype=torch.float16).to("cuda")                                                                                                                                                                             
+    pipe = StableDiffusionControlNetPipeline.from_pretrained(
+        "stablediffusionapi/realistic-vision-v51", controlnet=controlnet, torch_dtype=torch.float16
+    ).to("cuda")
+    return pipe
+
+def generate(pipe, img_path, weather):
 
     image = Image.open(img_path)
     # image = image.resize((512, 1024))
@@ -20,11 +27,6 @@ def generate(img_path, weather):
 
     prompt = f"make it on {weather}"
     neg = "lowres, text, error, cropped, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, out of frame, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck, username, watermark, signature"
-
-    controlnet = ControlNetModel.from_pretrained(checkpoint, torch_dtype=torch.float16).to("cuda")                                                                                                                                                                             
-    pipe = StableDiffusionControlNetPipeline.from_pretrained(
-        "stablediffusionapi/realistic-vision-v51", controlnet=controlnet, torch_dtype=torch.float16
-    ).to("cuda")
 
     generator = torch.manual_seed(42)
     scheduler = DPMSolverMultistepScheduler(use_karras_sigmas = True)
