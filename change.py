@@ -12,10 +12,9 @@ from diffusers import (
     DPMSolverMultistepScheduler,
 )
 def load_pipe():
-    checkpoint = "lllyasviel/control_v11e_sd15_ip2p"
-    controlnet = ControlNetModel.from_pretrained(checkpoint, torch_dtype=torch.float16).to("cuda")                                                                                                                                                                             
+    controlnet = ControlNetModel.from_pretrained("control_v11e_sd15_ip2p", torch_dtype=torch.float16).to("cuda")                                                                                                                                                                             
     pipe = StableDiffusionControlNetPipeline.from_pretrained(
-        "stablediffusionapi/realistic-vision-v51", controlnet=controlnet, torch_dtype=torch.float16
+        "realistic-vision-v51", controlnet=controlnet, torch_dtype=torch.float16
     ).to("cuda")
     return pipe
 
@@ -43,8 +42,9 @@ def generate(pipe, img_path, weather):
 
 
 if __name__ == "__main__":
-    img_path = '/media/mountHDD2/venus/ChangeWeather/leftImg8bit/train/darmstadt/darmstadt_000000_000019_leftImg8bit.png'
+    img_path = '/workspace/model1.jpg'
     weather = "night"
-    img = generate(img_path, weather)    
-    img.save("out.png")                                                                                                                                                             
+    pipe = load_pipe()
+    img = generate(pipe, img_path, weather)    
+    img.save("out.png")                                                                                                                                                           
 
